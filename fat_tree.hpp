@@ -2,7 +2,7 @@
 #define FATTREE
 
 #include <cstddef>
-
+#include <stdexcept>
 namespace stuff {
 
 template <class T, size_t K>
@@ -54,7 +54,13 @@ BTreeIt<T, K> maximum(BTree<T, K>* root)
 }
 
 template <class T, size_t K>
-T value(BTreeIt<T, K> it);
+T value(BTreeIt<T, K> it)
+{
+    if (!it || !it.current || it.s >= K) {
+        throw std::runtime_error("bad iterator");
+    }
+    return it.current->val[it.s];
+}
 template <class T, size_t K>
 BTreeIt<T, K>* next(BTree<T, K> it);
 template <class T, size_t K>
