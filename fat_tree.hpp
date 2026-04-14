@@ -49,8 +49,8 @@ BTreeIt<T, K> maximum(BTree<T, K>* root)
     while (curr->children[K] != nullptr) {
         curr = curr->children[K];
     }
-
-    return BTreeIt<T, K>(curr->numKeys - 1, curr);
+    size_t lastIdx = (curr->numKeys > 0) ? (curr->numKeys - 1) : 0;
+    return BTreeIt<T, K>(lastIdx, curr);
 }
 
 template <class T, size_t K>
