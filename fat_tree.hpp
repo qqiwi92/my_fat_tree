@@ -108,7 +108,37 @@ BTreeIt<T, K> next(BTreeIt<T, K> it)
 }
 
 template <class T, size_t K>
-BTreeIt<T, K> prev(BTreeIt<T, K> it);
+BTreeIt<T, K> prev(BTreeIt<T, K> it)
+{
+    if (!it.current)
+        return BTreeIt<T, K>(0, nullptr);
+
+    BTree<T, K>* node = it.current;
+
+    if (node->children[it.s] != nullptr) {
+        return maximum(node->children[it.s]);
+    }
+
+    if (it.s > 0) {
+        return BTreeIt<T, K>(it.s - 1, node);
+    }
+
+    BTree<T, K>* child = node;
+    BTree<T, K>* p = node->parent;
+
+    while (p) {
+        size_t idx = getRelativePosition(child);
+
+        if (idx > 0) {
+            return BTreeIt<T, K>(idx - 1, p);
+        }
+
+        child = p;
+        p = p->parent;
+    }
+
+    return BTreeIt<T, K>(0, nullptr);
+}
 
 template <class T, size_t K>
 bool hasNext(BTreeIt<T, K> it)
