@@ -63,6 +63,21 @@ T& value(BTreeIt<T, K> it)
 }
 
 template <class T, size_t K>
+size_t iAmNthChild(BTree<T, K>* root)
+{
+    if (root == nullptr || root->parent == nullptr) {
+        throw std::out_of_range("bad input");
+    }
+    BTree<T, K>* parent = root->parent;
+    for (size_t i = 0; i < parent->numKeys; ++i) {
+        if (parent->children[i] == root) {
+            return true;
+        }
+    }
+    return false;
+}
+
+template <class T, size_t K>
 BTreeIt<T, K> next(BTreeIt<T, K> it)
 {
     BTree<T, K>* curr = it.current;
