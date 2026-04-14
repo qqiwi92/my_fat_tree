@@ -15,18 +15,21 @@ struct BTree {
 
 template <class T, size_t K>
 struct BTreeIt {
-    BTreeIt(size_t s, BTree<T, K>* current)
-        : s(s)
-        , current(current)
-    {
-    }
     BTree<T, K>* current;
     size_t s;
+
+    BTreeIt(size_t s, BTree<T, K>* current)
+        : current(current)
+        , s(s)
+    {
+    }
 };
+
 template <class T, size_t K>
 BTreeIt<T, K> minimum(BTree<T, K>* root)
 {
-    if (!root) return BTreeIt<T, K>(0, nullptr);
+    if (!root)
+        return BTreeIt<T, K>(0, nullptr);
 
     BTree<T, K>* curr = root;
     while (curr->children[0] != nullptr) {
@@ -38,10 +41,11 @@ BTreeIt<T, K> minimum(BTree<T, K>* root)
 template <class T, size_t K>
 BTreeIt<T, K> maximum(BTree<T, K>* root)
 {
-    if (!root) return BTreeIt<T, K>(0, nullptr);
+    if (!root)
+        return BTreeIt<T, K>(0, nullptr);
 
     BTree<T, K>* curr = root;
-    
+
     while (curr->children[K] != nullptr) {
         curr = curr->children[K];
     }
