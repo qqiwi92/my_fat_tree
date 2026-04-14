@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Build Boost Test",
+    "command": "g++ -g test_fat_tree.cpp -o test_fat_tree -lboost_unit_test_framework",
+    "use_new_terminal": false,
+  },
+  {
+    "label": "Build & Run Boost Test",
+    "command": "g++ -g test_fat_tree.cpp -o test_fat_tree -lboost_unit_test_framework && ./test_fat_tree",
+    "use_new_terminal": false,
+  },
+]
