@@ -54,24 +54,34 @@ BTreeIt<T, K> maximum(BTree<T, K>* root)
 }
 
 template <class T, size_t K>
-T value(BTreeIt<T, K> it)
+// пришлось переименовать тк в бусте уже есть
+// такая функция, и мне выдавалась стена смерти
+T getValue(BTreeIt<T, K> it)
 {
-    if (!it || !it.current || it.s >= K) {
+    if (it.current != nullptr || it.s >= K) {
         throw std::runtime_error("bad iterator");
     }
     return it.current->val[it.s];
 }
 
 template <class T, size_t K>
-BTreeIt<T, K>* next(BTree<T, K> it);
+BTreeIt<T, K> next(BTreeIt<T, K> it)
+{
+    BTree<T, K>* curr = it.current;
+}
+
 template <class T, size_t K>
-BTreeIt<T, K>* prev(BTree<T, K> it);
+BTreeIt<T, K> prev(BTreeIt<T, K> it);
+
 template <class T, size_t K>
-bool hasNext(BTree<T, K> it) {
-    return next(it)->current;
+bool hasNext(BTree<T, K> it)
+{
+    return next(it).current;
 }
 template <class T, size_t K>
-bool hasPrev(BTree<T, K> it){ 
-    return prev(it)->current;
+bool hasPrev(BTree<T, K> it)
+{
+    return prev(it).current;
+}
 }
 #endif
