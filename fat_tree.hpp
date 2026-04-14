@@ -61,14 +61,17 @@ T value(BTreeIt<T, K> it)
     }
     return it.current->val[it.s];
 }
+
 template <class T, size_t K>
 BTreeIt<T, K>* next(BTree<T, K> it);
 template <class T, size_t K>
 BTreeIt<T, K>* prev(BTree<T, K> it);
 template <class T, size_t K>
-bool hasNext(BTree<T, K> it);
+bool hasNext(BTree<T, K> it) {
+    return next(it)->current;
+}
 template <class T, size_t K>
-bool hasPrev(BTree<T, K> it);
-
+bool hasPrev(BTree<T, K> it){ 
+    return prev(it)->current;
 }
 #endif
