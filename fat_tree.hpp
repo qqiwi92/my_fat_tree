@@ -82,22 +82,47 @@ bool hasPrev(BTreeIt<T, K> it)
     return prev(it).current;
 }
 
-
-
-template < class T, class Cmp > bool less(Cmp cmp, T lhs, T rhs)
+template <class T, class Cmp>
+bool less(Cmp cmp, T lhs, T rhs)
 {
-  return cmp(lhs, rhs);
+    return cmp(lhs, rhs);
 }
-template < class T, class Cmp > bool greater(Cmp cmp, T lhs, T rhs)
+template <class T, class Cmp>
+bool greater(Cmp cmp, T lhs, T rhs)
 {
-  return cmp(rhs, lhs);
-}
-
-template < class T, class Cmp > bool equal(Cmp cmp, T lhs, T rhs)
-{
-  return !less(cmp, lhs, rhs) && !greater(cmp, lhs, rhs);
+    return cmp(rhs, lhs);
 }
 
+template <class T, class Cmp>
+bool equal(Cmp cmp, T lhs, T rhs)
+{
+    return !less(cmp, lhs, rhs) && !greater(cmp, lhs, rhs);
+}
+
+template <class T, size_t K, class Cmp>
+bool isEqualUnsafe(BTree<T, K>* lhs, BTree<T, K>* rhs, Cmp cmp)
+{
+    BTree<T, K>* blhs = siftLeft(lhs);
+    BTree<T, K>* brhs = siftLeft(rhs);
+    while (hasNext(blhs) && hasNext(brhs)) {
+        if (!equal(cmp, blhs->val, brhs->val))
+            return false;
+        blhs = next(blhs);
+        brhs = next(brhs);
+    }
+    return !hasNext(blhs) && !hasNext(brhs);
+}
+
+template <class T, size_t K, class Cmp>
+bool isEqual(BTree<T, K>* lhs, BTree<T, K>* rhs, Cmp cmp)
+{
+    if (!rhs && !lhs)
+        return true;
+    if (!rhs || !lhs)
+        return false;
+    assert(rhs && lhs);
+    return isEqualUnsafe(lhs, rhs, cmp);
+}
 
 }
 #endif
