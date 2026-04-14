@@ -3,7 +3,6 @@
 
 #include <cstddef>
 #include <stdexcept>
-namespace stuff {
 
 template <class T, size_t K>
 struct BTree {
@@ -56,31 +55,56 @@ BTreeIt<T, K> maximum(BTree<T, K>* root)
 template <class T, size_t K>
 T& value(BTreeIt<T, K> it)
 {
-    if (it.current != nullptr || it.s >= K) {
+    if (it.current == nullptr || it.s >= K) {
         throw std::runtime_error("bad iterator");
     }
     return it.current->val[it.s];
 }
 
 template <class T, size_t K>
-size_t iAmNthChild(BTree<T, K>* root)
+size_t getRelativePosition(BTree<T, K>* root)
 {
     if (root == nullptr || root->parent == nullptr) {
         throw std::out_of_range("bad input");
     }
     BTree<T, K>* parent = root->parent;
-    for (size_t i = 0; i < parent->numKeys; ++i) {
+    for (size_t i = 0; i < parent->numKeys + 1; ++i) {
         if (parent->children[i] == root) {
-            return true;
+            return i;
         }
     }
-    return false;
+    throw std::out_of_range("not a child of a parent");
 }
 
 template <class T, size_t K>
 BTreeIt<T, K> next(BTreeIt<T, K> it)
 {
-    BTree<T, K>* curr = it.current;
+    if (!it.current)
+        return BTreeIt<T, K>(0, nullptr);
+
+    BTree<T, K>* node = it.current;
+
+    if (node->children[it.s + 1] != nullptr) {
+        return minimum(node->children[it.s + 1]);
+    }
+    if (it.s + 1 < node->numKeys) {
+        return BTreeIt<T, K>(it.s + 1, node);
+    }
+
+    BTree<T, K>* parent = node->parent;
+    BTree<T, K>* child = node;
+
+    while (parent) {
+        size_t relativePosition = getRelativePosition(node);
+
+        if (relativePosition < parent->numKeys) {
+            return BTreeIt<T, K>(relativePosition, parent);
+        }
+        child = parent;
+        parent = parent->parent;
+    }
+
+    return { 0, nullptr };
 }
 
 template <class T, size_t K>
@@ -128,7 +152,7 @@ bool isEqualUnsafe(BTree<T, K>* lhs, BTree<T, K>* rhs, Cmp cmp)
     return !hasNext(blhs) && !hasNext(brhs);
 }
 
-template <class T, size_t K, class Cmp>
+template <class T, class Cmp, size_t K>
 bool isEqual(BTree<T, K>* lhs, BTree<T, K>* rhs, Cmp cmp)
 {
     if (!rhs && !lhs)
@@ -139,5 +163,4 @@ bool isEqual(BTree<T, K>* lhs, BTree<T, K>* rhs, Cmp cmp)
     return isEqualUnsafe(lhs, rhs, cmp);
 }
 
-}
 #endif
