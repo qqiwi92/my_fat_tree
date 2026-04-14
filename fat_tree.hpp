@@ -10,6 +10,7 @@ struct BTree {
     T val[K];
     BTree<T, K>* children[K + 1];
     BTree<T, K>* parent;
+    size_t numKeys;
 };
 
 template <class T, size_t K>
@@ -22,17 +23,30 @@ struct BTreeIt {
     BTree<T, K>* current;
     size_t s;
 };
+template <class T, size_t K>
+BTreeIt<T, K> minimum(BTree<T, K>* root)
+{
+    if (!root) return BTreeIt<T, K>(0, nullptr);
+
+    BTree<T, K>* curr = root;
+    while (curr->children[0] != nullptr) {
+        curr = curr->children[0];
+    }
+    return BTreeIt<T, K>(0, curr);
+}
 
 template <class T, size_t K>
-BTreeIt<T, K>* minimum(BTree<T, K> it)
+BTreeIt<T, K> maximum(BTree<T, K>* root)
 {
-    if (!it) {
-        return { nullptr, 0 };
+    if (!root) return BTreeIt<T, K>(0, nullptr);
+
+    BTree<T, K>* curr = root;
+    
+    while (curr->children[K] != nullptr) {
+        curr = curr->children[K];
     }
-    while (it.children[0]) {
-        it = it.children[0];
-    }
-    return { it, 0 };
+
+    return BTreeIt<T, K>(curr->numKeys - 1, curr);
 }
 
 template <class T, size_t K>
